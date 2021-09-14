@@ -1,0 +1,2 @@
+! Enable CDP Global Configuration
+cdp run

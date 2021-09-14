@@ -1,0 +1,46 @@
+---
+- name: Test device create cv_configlet_v3
+  hosts: cvp
+  connection: local
+  gather_facts: no
+  vars:
+    configlet_list:
+      Ansible_Demo_Configlet: "! This is a Ansible Demo Configlet\n!"
+      CDP_Enable_Configlet: "{{ lookup('file', 'templates/cdp_enable_configlet.txt') }}"
+    verbose: False
+    containers:
+        Fabric_Ansible_Demo:
+            parentContainerName: Tenant
+        Spine_Ansible_Demo:
+            parentContainerName: Fabric_Ansible_Demo
+        Leaf_Ansible_Demo:
+            parentContainerName: Spine_Ansible_Demo
+    devices_provision:
+      - fqdn: spine-01a
+        parentContainerName: 'Spine_Ansible_Demo'
+        configlets:
+            - 'CDP_Enable_Configlet'
+        systemMacAddress: '50:8d:00:e3:78:aa'
+      - fqdn: leaf-01b
+        parentContainerName: 'Leaf_Ansible_Demo'
+        configlets:
+            - 'CDP_Enable_Configlet'
+        systemMacAddress: '50:8d:00:e3:78:bb'
+
+  tasks:
+    - name: 'Create configlets on CVP {{inventory_hostname}}.'
+      tags:
+        - provision
+      arista.cvp.cv_configlet_v3:
+        configlets: "{{configlet_list}}"
+        configlets_notes: "Configlet managed by Ansible"
+        state: present
+      register: cvp_configlet
+
+    - name: 'running cvp_container'
+      arista.cvp.cv_container_v3:
+        topology: "{{ containers }}"
+
+    - name: "Configure devices on {{inventory_hostname}}"
+      arista.cvp.cv_device_v3:
+        devices: '{{devices_provision}}'

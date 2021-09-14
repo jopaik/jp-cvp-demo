@@ -1,0 +1,9 @@
+---
+ansible-navigator:
+  execution-environment:
+    container-engine: docker
+    enabled: True
+    image: jp-cvp
+    pull-policy: never
+  logging:
+    level: critical

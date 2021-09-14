@@ -1,0 +1,19 @@
+# task in loose mode (default)
+- name: Create container topology on CVP
+  hosts: cvp
+  connection: local
+  gather_facts: no
+  vars:
+    verbose: False
+    containers:
+        Fabric_Ansible_Demo:
+            parentContainerName: Tenant
+        Spine_Ansible_Demo:
+            parentContainerName: Fabric_Ansible_Demo
+        Leaf_Ansible_Demo:
+            parentContainerName: Spine_Ansible_Demo
+
+  tasks:
+    - name: 'running cvp_container'
+      arista.cvp.cv_container_v3:
+        topology: "{{ containers }}"

@@ -1,3 +1,12 @@
+
+hosts
+.DS_Store
+*priv*
+*.log
+*.pyc
+private
+*artifact*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
