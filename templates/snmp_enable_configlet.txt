@@ -1,0 +1,3 @@
+! Enable SNMP public and private Configuration
+snmp community public12345 ro
+snmp community private12345 rw
